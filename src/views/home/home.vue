@@ -6,7 +6,7 @@
     <home-swiper :banners="banners"></home-swiper>
     <recommend-views :recommend="recommends"></recommend-views>
     <feature-views></feature-views>
-    <tab-control :titles="['流行', '新款', '精选']"></tab-control>
+    <tab-control :titles="['流行', '新款', '精选a']"></tab-control>
     <p>6666</p>
     <p>6666</p>
     <p>6666</p>
