@@ -7,6 +7,7 @@
     <recommend-views :recommend="recommends"></recommend-views>
     <feature-views></feature-views>
     <tab-control :titles="['流行', '新款', '精选a']"></tab-control>
+    <goods-List :goods="this.goods['pop'].list"></goods-List>
     <p>6666</p>
     <p>6666</p>
     <p>6666</p>
@@ -50,8 +51,9 @@ import homeSwiper from "@/views/home/childComps/homeSwiper";
 import recommendViews from "@/views/home/childComps/recommendViews";
 import featureViews from "@/views/home/childComps/featureView";
 import tabControl from "@/components/content/tabControl/tabControl";
+import goodsList from "@/components/content/goods/goodsList";
 
-import { getHomeMultidata } from "@/network/home.js";
+import { getHomeMultidata, getHomeGoods } from "@/network/home.js";
 
 export default {
   name: "home",
@@ -60,19 +62,46 @@ export default {
     homeSwiper,
     recommendViews,
     featureViews,
-    tabControl
+    tabControl,
+    goodsList
   },
   data() {
     return {
       banners: [],
-      recommends: []
+      recommends: [],
+      goods: {
+        pop: { page: 0, list: [] },
+        new: { page: 0, list: [] },
+        sell: { page: 0, list: [] }
+      }
     };
   },
   created() {
-    getHomeMultidata().then(res => {
-      this.banners = res.data.banner.list;
-      this.recommends = res.data.recommend.list;
-    });
+    // 1.请求多个数据
+    this.getHomeMultidata();
+    // 2.请求商品数据
+    this.getHomeGoods("pop");
+    this.getHomeGoods("new");
+    this.getHomeGoods("sell");
+  },
+  methods: {
+    getHomeMultidata() {
+      getHomeMultidata().then(res => {
+        this.banners = res.data.banner.list;
+        this.recommends = res.data.recommend.list;
+      });
+    },
+    getHomeGoods(type) {
+      const page = this.goods[type].page + 1;
+      getHomeGoods(type, page).then(res => {
+        console.log(res);
+        // for(n of res.data.list){
+        //   this.goods[type].list.push(n);
+        // }
+        this.goods[type].list.push(...res.data.list);
+        this.goods[type].page += 1;
+      });
+    }
   }
 };
 </script>
